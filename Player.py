@@ -19,7 +19,7 @@ class Player(object):
 
         # Start-Position des Players festlegen und
         # merken in welche Richtung wir schauen und ob wir überhaupt laufen.
-        self.pos_x = 10 * 32
+        self.pos_x = 5 * 32
         self.pos_y = 13 * 32
         self.dir = 0
         self.walking = False

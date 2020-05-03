@@ -3,6 +3,7 @@ from random import random, randint
 
 import pygame
 
+from Objectset import Objectset
 from Player import Player
 from Tileset import Tileset
 
@@ -17,6 +18,9 @@ class Tilemap(object):
         self.tileset.add_tile("mud", 32, 0)
         self.tileset.add_tile("grass-mud", 0, 64)
         self.tileset.add_tile("empty", 0, 96)
+
+        self.objectset=Objectset("res/tileset.png", (255, 0, 255), 32, 32)
+        self.objectset.add_object("block", 0, 32)
 
         # Festlegen der Startposition der Kamera. Hier (0, 0).
         self.camera_x = 0
@@ -42,6 +46,18 @@ class Tilemap(object):
                 else:
                     self.tiles[i].append("empty")
 
+        self.objects = list()
+
+        for i in range(0, self.height):
+            self.objects.append(list())
+            for j in range(0, self.width):
+                if i == 14:
+                    if j == 10:
+                        self.objects[i].append("block")
+                    else:
+                        self.objects[i].append("")
+                else:
+                    self.objects[i].append("")
         # Player-Objekt erstellen.
         self.player = Player()
 
@@ -55,6 +71,7 @@ class Tilemap(object):
                 continue
             # Die aktuelle Zeile zum einfacheren Zugriff speichern.
             line = self.tiles[ty]
+            objectLine = self.objects[ty]
             # Und jetzt spaltenweise die Tiles rendern.
             for x in range(0, int(screen.get_width() / self.tileset.tile_width) + 1):
                 # Auch hier müssen wir die Kamera beachten.
@@ -68,7 +85,12 @@ class Tilemap(object):
                 if tile is not None:
                     screen.blit(self.tileset.image, (x * self.tileset.tile_width, y * self.tileset.tile_height),
                                 tile.rect)
-
+                objectname = objectLine[tx]
+                if objectname != "":
+                    object = self.objectset.get_object(objectname)
+                    if object is not None:
+                        screen.blit(self.objectset.image, (x * self.tileset.tile_width, y * self.tileset.tile_height),
+                                    object.rect)
         # Und zuletzt den Player rendern.
         self.player.render(screen)
 
